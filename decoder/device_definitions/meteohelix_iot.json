@@ -1,0 +1,163 @@
+{
+  "MeteoHelix IoT": {
+    "decoder": {
+      "device": {
+        "_tm_type":"str"
+      },
+      "provider": {
+        "_tm_type":"str"
+      },
+      "seqNumber": {
+        "_tm_type":"str"
+      },
+      "time": {
+        "_tm_type": "datetime"
+      },
+      "snr": {
+        "_tm_type": "float"
+      },
+      "data": {
+        "_tm_type": "str"
+      }  
+    },
+    "modifiers": {
+      "deviceId": {
+        "_tm_field": "device"
+      },
+      "seqNumber": {
+        "_tm_field": "seqNumber"
+      },
+      "timestamp": {
+        "_tm_field": "time"
+      },
+      "snr": {
+        "_tm_field":"snr"
+      },
+      "Battery": {
+        "_tm_field": "data",
+        "mods": [
+          {
+            "func": "ubin",
+            "value": [2,7]
+          },
+          {
+            "func": "mul",
+            "value": 0.05
+          },
+          {
+            "func": "add",
+            "value": 3
+          }
+        ]
+      },
+      "Temperature": {
+        "_tm_field": "data",
+        "mods": [
+          {
+            "func": "ubin",
+            "value": [7,18]
+          },
+          {
+            "func": "mul",
+            "value": 0.1
+          },
+          {
+            "func": "add",
+            "value": -100
+          }
+        ]
+      },
+      "T_min": {
+        "_tm_field": "data",
+        "mods": [
+          {
+            "func": "ubin",
+            "value": [18,24]
+          },
+          {
+            "func": "mul",
+            "value": 0.1
+          }
+        ]
+      },
+      "T_max": {
+        "_tm_field": "data",
+        "mods": [
+          {
+            "func": "ubin",
+            "value": [24,30]
+          },
+          {
+            "func": "mul",
+            "value": 0.1
+          }
+        ]
+      },
+      "Humidity": {
+        "_tm_field": "data",
+        "mods": [
+          {
+            "func": "ubin",
+            "value": [30,39]
+          },
+          {
+            "func": "mul",
+            "value": 0.2
+          }
+        ]
+      },
+      "Pressure": {
+        "_tm_field": "data",
+        "mods": [
+          {
+            "func": "ubin",
+            "value": [39,53]
+          },
+          {
+            "func": "mul",
+            "value": 5
+          },
+          {
+            "func": "add",
+            "value": 50000
+          }
+        ]
+      },
+      "Irradiation": {
+        "_tm_field": "data",
+        "mods": [
+          {
+            "func": "ubin",
+            "value": [53,63]
+          },
+          {
+            "func": "mul",
+            "value": 2
+          }
+        ]
+      },
+      "Irr_max": {
+        "_tm_field": "data",
+        "mods": [
+          {
+            "func": "ubin",
+            "value": [63,72]
+          },
+          {
+            "func": "mul",
+            "value": 2
+          }
+        ]
+      },
+      "Rain": {
+        "_tm_field": "data",
+        "mods": [
+          {
+            "func": "ubin",
+            "value": [72,80]
+          }
+        ]
+      }
+    }
+  }
+}
