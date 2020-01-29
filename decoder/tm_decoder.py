@@ -32,8 +32,8 @@ class TM_decoder():
       'pow': lambda a, b: a ** b,
       'app': lambda a, b: a + b,
       'pre': lambda a, b: b + a,
-      'ubin': lambda data, array: data[array[0] : array[1]].uint,
-      'bin': lambda data, array: data[array[0] : array[1]].int,
+      'ubin': lambda data, limits: data[limits[0] : limits[1]].uint,
+      'bin': lambda data, limits: data[limits[0] : limits[1]].int,
   }
 
   class _DictToObject(object):
@@ -71,7 +71,7 @@ class TM_decoder():
       print(e)
       return None
 
-  def _parseModFns(self, modifiers) -> dict:
+  def _parseModFns(self, modifiers: dict) -> dict:
     
     def modFn(field: str, functionList: List[object]):
       '''Return modification function'''
@@ -98,7 +98,7 @@ class TM_decoder():
 
     return output
 
-  def _create_translator(self, decoder, modifiers):
+  def _create_translator(self, decoder: dict, modifiers: dict):
     destinationClass = type('outputClass', (object,), modifiers)
     sourceObject = self.__class__._DictToObject(decoder)
     mapper = ObjectMapper()
@@ -111,7 +111,7 @@ class TM_decoder():
     tdefault = field.get('default', Ellipsis)
     return (tfield, tdefault)
   
-  def _create_decoder(self, decoder):
+  def _create_decoder(self, decoder: dict):
     keys = decoder.keys()
     fields = list(map(lambda field: self._create_type(decoder[field]), keys))
     decoderDict = dict(zip(keys, fields))
@@ -123,7 +123,7 @@ class TM_decoder():
 
 # INITIALIZE BUILT-IN DEVICE DEFINITIONS
 
-def loadDefinitions() -> None:
+def loadBuiltinDefinitions():
   currdir = join(getcwd(), 'decoder', 'device_definitions')
   for _, _, files in walk(currdir):
     for f in files:
@@ -132,10 +132,10 @@ def loadDefinitions() -> None:
           data = json.load(json_file)
           for device in data:
             decoders[device] = TM_decoder(device, data[device])
-        except expression as identifier:
+        except Exception as e:
           pass
 
-def addDefinition(definitions: dict) -> None:
+def addDefinition(definitions: dict):
   for device in definitions:
     if isinstance(definitions[device], dict) and \
        isinstance(definitions[device].get('decoder'), dict) and \
@@ -144,7 +144,7 @@ def addDefinition(definitions: dict) -> None:
 
 def decodePayload(deviceType: str, payload: dict) -> dict:
   if len(decoders) == 0:
-    loadDefinitions()
+    loadBuiltinDefinitions()
   if deviceType in decoders and isinstance(payload, dict):
     return decoders[deviceType].decode(payload)
   else:
