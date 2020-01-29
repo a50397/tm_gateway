@@ -53,7 +53,7 @@ class TM_decoder():
     
   def __init__(self, name: str, definition: Dict):
     try:
-      self.name = name
+      self.name = name  
       self._definition = definition
       decoder, modifiers = itemgetter('decoder', 'modifiers')(self._definition)
     except KeyError as error:
@@ -68,8 +68,7 @@ class TM_decoder():
       decoded = self._decoder.map(readingObject, allow_unmapped=True)
       return decoded.__dict__
     except Exception as e:
-      print(e)
-      return None
+      raise e
 
   def _parseModFns(self, modifiers: dict) -> dict:
     
