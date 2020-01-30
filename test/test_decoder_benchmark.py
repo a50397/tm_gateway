@@ -1,4 +1,5 @@
 from decoder import decodePayload
+import unittest
 
 data = [
   { "device": "367EEF",
@@ -24,8 +25,19 @@ data = [
 
 import time
 
-for d in range(200):
-  start = time.time()
-  decodePayload('MeteoHelix IoT',data[0])
-  end = time.time()
-  print(end - start)
+class decoder_benchmark(unittest.TestCase):
+  
+  def test_benchmark(self):
+    '''Not a real test...'''
+    results = []
+    for d in range(500):
+      start = time.time()
+      decodePayload('MeteoHelix IoT',data[0])
+      end = time.time()
+      results.append(end - start)
+    print(sum(results) / len(results))
+    self.assertTrue(True)
+
+
+if __name__ == '__main__':
+    unittest.main()
