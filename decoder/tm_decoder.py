@@ -10,6 +10,12 @@ from os import getcwd, walk
 from os.path import join
 import json
 
+import logging
+
+logging.basicConfig()
+logger = logging.getLogger('tmgw_decoder')
+logger.setLevel('DEBUG')
+
 __all__ = ["decodePayload", "addDefinition"]
 
 decoders = {}
@@ -56,7 +62,8 @@ class TM_decoder():
       self.name = name  
       self._definition = definition
       decoder, modifiers = itemgetter('decoder', 'modifiers')(self._definition)
-    except KeyError as error:
+    except KeyError as e:
+      logger.debug('Bad decoder structure')
       raise ValueError('Bad decoder structure')
     self._inputChecker = self._create_decoder(decoder)
     self._decoder = self._create_translator(decoder, modifiers)
@@ -68,6 +75,7 @@ class TM_decoder():
       decoded = self._decoder.map(readingObject, allow_unmapped=True)
       return decoded.__dict__
     except Exception as e:
+      logger.debug(f'Decode exception {e}')
       raise e
 
   def _parseModFns(self, modifiers: dict) -> dict:
@@ -85,6 +93,7 @@ class TM_decoder():
           try:
             value = fns[mod['func']](value, mod['value']) if mod['func'] in fns else value        
           except Exception as e:
+            logger.debug(f'Modifier exception {e}')
             pass
         if isinstance(value, float):
           value = round(value, 5)
@@ -117,6 +126,7 @@ class TM_decoder():
     try:
       model = create_model(self.name, **decoderDict)
     except Exception as e:
+      logger.debug(f'Decoder creation exception {e}')
       raise e
     return model
 
@@ -132,6 +142,7 @@ def loadBuiltinDefinitions():
           for device in data:
             decoders[device] = TM_decoder(device, data[device])
         except Exception as e:
+          logger.debug(f'Built-in decoder loading exception {e}')
           pass
 
 def addDefinition(definitions: dict):
@@ -147,4 +158,5 @@ def decodePayload(deviceType: str, payload: dict) -> dict:
   if deviceType in decoders and isinstance(payload, dict):
     return decoders[deviceType].decode(payload)
   else:
-    return {}
+    logger.debug(f'Device type {deviceType} not found in decoders')
+    raise ValueError(f'Device type {deviceType} not found in decoders')

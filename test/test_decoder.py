@@ -39,8 +39,8 @@ class decoder_test(unittest.TestCase):
     self.assertEqual(decoded['Pressure'], 56105)
 
   def test_decode_missing(self):
-    decoded = decodePayload("Unknown device", data[0])
-    self.assertEqual(decoded, {})
+    with self.assertRaises(ValueError):
+      decoded = decodePayload("Unknown device", data[0])
   
   def test_device_missing(self):
     with self.assertRaises(ValidationError):

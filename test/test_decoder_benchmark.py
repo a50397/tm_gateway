@@ -31,11 +31,12 @@ class decoder_benchmark(unittest.TestCase):
     '''Not a real test...'''
     results = []
     for d in range(500):
-      start = time.time()
-      decodePayload('MeteoHelix IoT',data[0])
-      end = time.time()
-      results.append(end - start)
-    print(sum(results) / len(results))
+      for d in data:
+        start = time.time()
+        decodePayload('MeteoHelix IoT', d)
+        end = time.time()
+        results.append(end - start)
+    print(f'Total decodes {len(results)}, total time: {sum(results)}, avg decode time {sum(results) / len(results)}')
     self.assertTrue(True)
 
 
